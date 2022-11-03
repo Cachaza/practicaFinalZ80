@@ -46,6 +46,16 @@ pintarTablero:
 
         CALL pintarLineaRecta
 
+        LD BC, $FBFE
+        LD HL, $5800
+leerTeclado:
+        CALL esperarQ
+        LD A, 5
+        LD (HL), 8
+        INC HL
+        CALL esperarNOq
+        JR leerTeclado
+
 
 
 
@@ -66,4 +76,5 @@ coordenadaYInicial: EQU ((24- ((filas * 2) + 1) ) / 2) ; Esta la y
 ;Funciones
 
         include "graficos.asm"
+        include "logica.asm"
 
