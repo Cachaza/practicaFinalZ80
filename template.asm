@@ -18,8 +18,32 @@ begin:          di              ; Disable Interrupts
 
         LD B, (slots * 4) - (slots -2) ; anteriormente era ((slots * 2)*2) - 1 que viene de (slots * 2) + 7 (tiene sentido no tocarlo, que funciona para todo)
         LD H, filas
-        
-        include "pintarTablero.asm"
+pintarTablero1:       
+        CALL pintarLineaRecta
+
+        LD C, coordenadaXInicial ;
+        INC L 
+        LD B, slots + 1 ; el + 1 es para pintar la ultima linea
+        CALL pintarConEspacios
+
+        PUSH AF
+        LD A, slots -1
+        ADD C
+        LD C,A 
+        POP AF
+        LD A, colorLineas
+        CALL pixelyxc
+
+        LD C, coordenadaXInicial ;
+        INC L
+        LD B, (slots * 4) - (slots -2)
+        DEC H
+        JR NZ, pintarTablero1
+        CALL pintarLineaRecta
+
+
+
+
 ;-------------------------------------------------------------------------------------------------
 endofcode:      jr endofcode    ; Infinite loop
 
@@ -28,8 +52,8 @@ colorLineas: EQU 1
 negro: EQU 8
 colorSlots: EQU 8
 
-slots: EQU 5
-filas: EQU 5
+slots: EQU 3
+filas: EQU 6
 
 ; Razon para las formulas: https://stackoverflow.com/questions/27912979/center-rectangle-in-another-rectangle
 coordenadaXInicial: EQU ((32- ((slots * 4) - (slots -2)) ) / 2); ; Coordenadas de donde empieza a dibujar, esta es la x
