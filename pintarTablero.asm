@@ -1,24 +1,8 @@
-        LD A, negro; CARGO NEGRO EN A PARA PINTAR EL BODE DE NEGRO
-        CALL Borde;
-
-
-
-        LD A, colorLineas
-        
-        ; Razon para las formulas: https://stackoverflow.com/questions/27912979/center-rectangle-in-another-rectangle
-        LD C, ((32- ((slots * 4) - (slots -2)) ) / 2) ; Coordenadas de donde empieza a dibujar, esta es la x
-        LD L, ((24- ((filas * 2) + 1) ) / 2) ; Esta la y
-
-        ; Si son 4 slots, "-2", si son 3, -1    , si son 5, -3"
-        LD B, (slots * 4) - (slots -2) ; anteriormente era ((slots * 2)*2) - 1 que viene de (slots * 2) + 7 (tiene sentido no tocarlo, que funciona para todo)
-        LD H, filas
-        
-
-
 mainloop:
+pintarLineaRecta:
         CALL pixelyxc
         inc C
-        DJNZ mainloop ; este pinta una linea horizontal y ya
+        DJNZ pintarLineaRecta ; este pinta una linea horizontal y ya
 
 
         LD C, ((32- ((slots * 4) - (slots -2)) ) / 2) ;
@@ -49,8 +33,6 @@ pintarConEspacios:       ; pinta una linea cada dos pixeles, es decir para casa 
         LD A, colorLineas
 
         CALL pixelyxc
-
-
 
         LD C, ((32- ((slots * 4) - (slots -2)) ) / 2) ;
         INC L
