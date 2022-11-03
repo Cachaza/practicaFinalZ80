@@ -36,10 +36,9 @@ pintarLineaRecta:
 pintarConEspacios:       ; pinta una linea cada dos pixeles, es decir para casa slot
         CALL pixelyxc
         inc C
-        LD A, colorSlots
-        CALL pixelyxc
+
         inc C
-        LD A , colorLineas
+
         DJNZ pintarConEspacios
         RET
 
