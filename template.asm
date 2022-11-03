@@ -19,7 +19,7 @@ begin:          di              ; Disable Interrupts
         LD B, (slots * 4) - (slots -2) ; anteriormente era ((slots * 2)*2) - 1 que viene de (slots * 2) + 7 (tiene sentido no tocarlo, que funciona para todo)
         LD H, filas
 
-pintarTablero1:       
+pintarTablero:       
         CALL pintarLineaRecta
 
         LD C, coordenadaXInicial ;
@@ -42,7 +42,7 @@ pintarTablero1:
         INC L
         LD B, (slots * 4) - (slots -2)
         DEC H
-        JR NZ, pintarTablero1
+        JR NZ, pintarTablero
 
         CALL pintarLineaRecta
 
