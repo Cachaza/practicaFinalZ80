@@ -18,7 +18,7 @@ begin:          di              ; Disable Interrupts
 
         LD B, (slots * 4) - (slots -2) ; anteriormente era ((slots * 2)*2) - 1 que viene de (slots * 2) + 7 (tiene sentido no tocarlo, que funciona para todo)
         LD H, filas
-        
+
 pintarTablero1:       
         CALL pintarLineaRecta
 
@@ -28,12 +28,14 @@ pintarTablero1:
 
         CALL pintarConEspacios
 
+        ; espacio necesalio para pintar luego el punto final en la linea de slots
         PUSH AF
         LD A, slots -1
         ADD C
         LD C,A 
         POP AF
 
+        ; punto final en la linea de slots
         CALL pixelyxc
 
         LD C, coordenadaXInicial ;
