@@ -19,6 +19,7 @@ begin:          di              ; Disable Interrupts
         LD B, (slots * 4) - (slots -2) ; anteriormente era ((slots * 2)*2) - 1 que viene de (slots * 2) + 7 (tiene sentido no tocarlo, que funciona para todo)
         LD H, filas
 
+
 pintarTablero:       
         CALL pintarLineaRecta
 
@@ -46,8 +47,11 @@ pintarTablero:
 
         CALL pintarLineaRecta
 
-
-
+slotyx:
+        PUSH BC
+        LD B, calculoy
+        LD C, calculox
+        POP BC
 
 ;-------------------------------------------------------------------------------------------------
 endofcode:      jr endofcode    ; Infinite loop
@@ -59,9 +63,18 @@ negro: EQU 8
 slots: EQU 5
 filas: EQU 5
 
+;Variables
+intento: DB 0
+slot: DB 0
+
+
 ; Razon para las formulas: https://stackoverflow.com/questions/27912979/center-rectangle-in-another-rectangle
 coordenadaXInicial: EQU ((32- ((slots * 4) - (slots -2)) ) / 2); ; Coordenadas de donde empieza a dibujar, esta es la x
 coordenadaYInicial: EQU ((24- ((filas * 2) + 1) ) / 2) ; Esta la y
+calculoy: EQU (2*intento)+1+coordenadaYInicial
+calculox: EQU (2*slot)+1+coordenadaXInicial
+
+
 
 ;Funciones
 

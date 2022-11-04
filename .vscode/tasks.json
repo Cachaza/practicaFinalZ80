@@ -4,9 +4,10 @@
                 {
             "label": "sjasmplus",
             "type": "shell",
-            "command": "C:/Temp/sjasmplus.exe", 
+            "command": "C:/Users/delga/OneDrive/Documentos/AOC/sjasmplus-1.20.1.win/sjasmplus.exe", 
             "args": [
                 "--lst=${fileDirname}/${fileBasenameNoExtension}.lst",
+                "--lstlab",
                 "--sld=${fileDirname}/${fileBasenameNoExtension}.sld",
                 "--raw=${fileDirname}/${fileBasenameNoExtension}.bin",
                 "--fullpath",
