@@ -20,13 +20,13 @@ begin:          di              ; Disable Interrupts
         LD H, filas
 
 pintarTablero:       
-        CALL pintarLineaRecta
+        CALL pintarLineaRecta ; Pinto la primera linea
 
-        LD C, coordenadaXInicial ;
-        INC L 
+        LD C, coordenadaXInicial ; reinicio coordenada X
+        INC L                    ; incremento coordenada Y , es decir bajo uno
         LD B, slots + 1 ; el + 1 es para pintar la ultima linea
 
-        CALL pintarConEspacios
+        CALL pintarConEspacios ; Pinto las lineas con slots
 
         ; espacio necesalio para pintar luego el punto final en la linea de slots
         PUSH AF
@@ -38,13 +38,13 @@ pintarTablero:
         ; punto final en la linea de slots
         CALL pixelyxc
 
-        LD C, coordenadaXInicial ;
+        LD C, coordenadaXInicial  ; reinicio coordenada X
         INC L
         LD B, (slots * 4) - (slots -2)
         DEC H
-        JR NZ, pintarTablero
+        JR NZ, pintarTablero ; mientras no llegue a la ultima linea, vuelvo a pintar
 
-        CALL pintarLineaRecta
+        CALL pintarLineaRecta ; Pinto la ultima linea
 
 
 
