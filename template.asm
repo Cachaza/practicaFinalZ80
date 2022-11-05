@@ -52,6 +52,7 @@ cambioLinea:
         LD B, slots ; reinicio slots en cada salto de linea
 pintar:
         CALL slotyx ; pinto el slot
+        
 
         ; suo uno a la variable slots
         PUSH AF 
@@ -65,7 +66,9 @@ pintar:
         PUSH AF
         LD A, 0         ; reinicio slots
         LD (slot), A    ; reinicio slots
+        
 
+        CALL validacionXY
         ; sumo uno a la variable de intentos
         LD A, (intento)
         INC A
@@ -75,7 +78,7 @@ pintar:
         DEC E
         JR NZ, cambioLinea
 
-
+        
 
 
 
@@ -93,6 +96,7 @@ filas: EQU 4
 ;Variables
 intento: DB 0
 slot: DB 0
+slots1: DB slots
 
 
 ; Razon para las formulas: https://stackoverflow.com/questions/27912979/center-rectangle-in-another-rectangle
