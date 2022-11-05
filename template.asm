@@ -47,11 +47,38 @@ pintarTablero:
 
         CALL pintarLineaRecta ; Pinto la ultima linea
 
-slotyx:
-        PUSH BC
-        LD B, calculoy
-        LD C, calculox
-        POP BC
+        LD E, filas ; cargo el numero de filas del tablero
+cambioLinea:
+        LD B, slots ; reinicio slots en cada salto de linea
+pintar:
+        CALL slotyx ; pinto el slot
+
+        ; suo uno a la variable slots
+        PUSH AF 
+        LD A, (slot) 
+        INC A
+        LD (slot), A
+        POP AF
+
+        DJNZ pintar
+
+        PUSH AF
+        LD A, 0         ; reinicio slots
+        LD (slot), A    ; reinicio slots
+
+        ; sumo uno a la variable de intentos
+        LD A, (intento)
+        INC A
+        LD (intento), A
+        POP AF
+
+        DEC E
+        JR NZ, cambioLinea
+
+
+
+
+
 
 ;-------------------------------------------------------------------------------------------------
 endofcode:      jr endofcode    ; Infinite loop
@@ -60,8 +87,8 @@ endofcode:      jr endofcode    ; Infinite loop
 colorLineas: EQU 1
 negro: EQU 8
 
-slots: EQU 5
-filas: EQU 5
+slots: EQU 6
+filas: EQU 4
 
 ;Variables
 intento: DB 0
@@ -71,12 +98,10 @@ slot: DB 0
 ; Razon para las formulas: https://stackoverflow.com/questions/27912979/center-rectangle-in-another-rectangle
 coordenadaXInicial: EQU ((32- ((slots * 4) - (slots -2)) ) / 2); ; Coordenadas de donde empieza a dibujar, esta es la x
 coordenadaYInicial: EQU ((24- ((filas * 2) + 1) ) / 2) ; Esta la y
-calculoy: EQU (2*intento)+1+coordenadaYInicial
-calculox: EQU (2*slot)+1+coordenadaXInicial
 
 
 
 ;Funciones
 
         include "graficos.asm"
-
+        include "logica.asm"
