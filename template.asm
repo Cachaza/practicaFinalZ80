@@ -31,11 +31,29 @@ evaluacionIntento:
     call copiadatos
     ld b, Slots -1
     call comparardatos
+    call pintaraciertos
     
 
     ret
+;NINGUN ACIERTO
+pintaraciertos:
+        ld a,d
+        or a; cp 0
+        jr z, evaluar_blancos;
+        ;prep pintar rojos
+        ld e,d                          
+        call validacionXY
+        ld a,10; rojo brillante
+;pintamos evaluación rojos
+bprojos: call pixel
+        inc c
+        dec e                           
+        jr nz, bprojos
+        ld a,d
+        cp (Slots-1)
+        jr z,hasganado
+        ret
 comparardatos:
-    
     ldd d,0 ;contador
     ld iy,(clavetemporal)
     ld ix,(intentos)
