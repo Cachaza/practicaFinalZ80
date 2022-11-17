@@ -78,8 +78,53 @@ pintar:
         DEC E
         JR NZ, cambioLinea
 
-        
 
+
+        CALL copiaDatos
+
+        ; Preparacion del bucle
+        LD D,0
+        LD B, slots
+        LD IX, intentos
+        LD IY, claveTemp
+        ; Bucle contador de aciertos
+bucleRojo:
+        LD A, (IY)
+        CP (IX)
+        JR NZ, saltoInsctrucciones
+
+        INC D
+        LD (IY), 255 ; 255 por que es un numero que el usuario no puede introducir
+saltoInsctrucciones:
+        INC IX
+        INC IY
+        DJNZ bucleRojo
+        
+        ; ningun acierto
+        LD A, D
+        OR A
+        JR Z, evaluarBlanco
+
+        ; prepentacion de pintar los rojos
+        LD B, D
+        CALL validacionXY
+        LD A, 10 ; 10 = rojo brillante
+        ; Pintar evaluacion de los rojos
+buclePintarRojo:
+        CALL pixelyxc
+        INC C
+        DJNZ buclePintarRojo
+        ; comprobar si ha ganado
+        LD A , D
+        CP slots
+        JR Z, ganador
+
+evaluarBlanco:
+        JR endofcode
+ganador:
+        LD a, 4
+        out ($FE), A
+     
 
 
 
@@ -90,13 +135,20 @@ endofcode:      jr endofcode    ; Infinite loop
 colorLineas: EQU 1
 negro: EQU 8
 
-slots: EQU 6
+slots: EQU 4
 filas: EQU 4
 
 ;Variables
 intento: DB 0
 slot: DB 0
 slots1: DB slots
+
+
+clave: DB 6,3,1,4
+intentos: DB 0,0,0,0
+claveTemp: DB 0,0,0,0
+
+contadorAciertos: DB slots
 
 
 ; Razon para las formulas: https://stackoverflow.com/questions/27912979/center-rectangle-in-another-rectangle
@@ -109,3 +161,48 @@ coordenadaYInicial: EQU ((24- ((filas * 2) + 1) ) / 2) ; Esta la y
 
         include "graficos.asm"
         include "logica.asm"
+
+
+copiaDatos:
+        PUSH AF
+        PUSH BC
+        PUSH DE
+        PUSH HL
+        LD HL, clave
+        LD DE, claveTemp
+        LD BC, slots
+        LDIR  ;cargamos la clave en claveTemp
+        POP HL
+        POP DE
+        POP BC
+        POP AF
+        RET
+evaluacionIntento:
+        PUSH AF
+        PUSH BC
+        PUSH HL
+
+        LD HL, intentos
+        INC HL
+        LD A, H
+        LD DE, claveTemp
+        INC DE
+
+        CP D
+        JR Z , acierto
+
+
+        POP HL
+        POP BC
+        POP AF
+        RET
+acierto:
+        POP HL
+        POP BC
+        POP AF
+        LD L, 5
+        LD C, 5
+        LD A, 5      ; color que pinta el slot
+        CALL pixelyxc   ; pinto el slot
+        RET
+ 
