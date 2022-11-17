@@ -27,22 +27,28 @@ mainloop:
 endofcode:      jr endofcode    ; Infinite loop
 ;-------------------------------------------------------------------------------------------------
 evaluacionIntento:
+
     call copiadatos
+    ld b, Slots -1
     call comparardatos
     
 
     ret
 comparardatos:
-    push bc
-    ld b, Slots -1
-    ld a,0
-    ld hl,(clavetemporal)
+    
+    ldd d,0 ;contador
+    ld iy,(clavetemporal)
     ld ix,(intentos)
-    cp (hl - ix)
+    ld a,(iy)
+    cp (ix);lo mismo que ld c(iy), cp c. es lo mismo.
+    jr nz, salta
+    inc d
+    ld (iy),255
+
+salta:
     inc ix
-    inc hl
+    inc iy
     djnz comparardatos
-    pop bc
     ret
 copiadatos:
     push bc
@@ -53,7 +59,6 @@ copiadatos:
     ldir
     pop hl
     pop bc
-    ret
     ret
 ;-------------------------------------------------------------------------------------------------
 pintar:;funcion que se encarga de pintar
