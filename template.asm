@@ -48,35 +48,7 @@ pintarTablero:
         CALL pintarLineaRecta ; Pinto la ultima linea
 
         LD E, filas ; cargo el numero de filas del tablero
-cambioLinea:
-        LD B, slots ; reinicio slots en cada salto de linea
-pintar:
-        CALL slotyx ; pinto el slot
-        
 
-        ; suo uno a la variable slots
-        PUSH AF 
-        LD A, (slot) 
-        INC A
-        LD (slot), A
-        POP AF
-
-        DJNZ pintar
-
-        PUSH AF
-        LD A, 0         ; reinicio slots
-        LD (slot), A    ; reinicio slots
-        
-
-        CALL validacionXY
-        ; sumo uno a la variable de intentos
-        LD A, (intento)
-        INC A
-        LD (intento), A
-        POP AF
-
-        DEC E
-        JR NZ, cambioLinea
 
 
 
@@ -85,7 +57,7 @@ pintar:
         ; Preparacion del bucle
         LD D,0
         LD B, slots
-        LD IX, intentos
+        LD IX, intentoJugador
         LD IY, claveTemp
         ; Bucle contador de aciertos
 bucleRojo:
@@ -119,33 +91,82 @@ buclePintarRojo:
         CP slots
         JR Z, ganador
 
+
+
 evaluarBlanco:
-        JR endofcode
-ganador:
-        LD a, 4
-        out ($FE), A
-     
+        PUSH DE
+        LD D,0
+        LD B, slots
+        LD E, slots
+        LD A, slots
+        LD IX, intentoJugador
+        LD IY, claveTemp
+evaluarBlanco2:
+
+        LD A, (IY)
+        CP (IX)
+        JR NZ, saltoInsctrucciones2
+
+        INC D
+        LD (IY), 254 ; 255 por que es un numero que el usuario no puede introducir
+
+saltoInsctrucciones2
+        INC IY
+        DJNZ evaluarBlanco2
+        LD B, slots
+        INC IX
+        LD IY, claveTemp
+
+
+        
+      
+        DEC E
+        JR NZ, evaluarBlanco2
+
+
+pintarBlanco2:        
+        LD B, D
+        CALL validacionXY
+        POP DE
+        LD A, C 
+        ADD D 
+        LD C, A
+        LD A, 7 ; 
+
+
+buclePintarBlanco:
+        CALL pixelyxc
+        INC C
+        DJNZ buclePintarBlanco
+  
+
+
+
 
 
 
 ;-------------------------------------------------------------------------------------------------
 endofcode:      jr endofcode    ; Infinite loop
-
+ganador:
+        LD a, 4
+        out ($FE), A
+        jr endofcode
 ; Contantes
 colorLineas: EQU 1
 negro: EQU 8
 
 slots: EQU 4
-filas: EQU 4
+filas: EQU 10
 
 ;Variables
 intento: DB 0
 slot: DB 0
+
 slots1: DB slots
 
 
-clave: DB 6,3,1,4
-intentos: DB 0,0,0,0
+clave: DB 4,5,3,1
+intentoJugador: DB 4,5,3,2
 claveTemp: DB 0,0,0,0
 
 contadorAciertos: DB slots
@@ -163,6 +184,9 @@ coordenadaYInicial: EQU ((24- ((filas * 2) + 1) ) / 2) ; Esta la y
         include "logica.asm"
 
 
+
+
+
 copiaDatos:
         PUSH AF
         PUSH BC
@@ -177,32 +201,3 @@ copiaDatos:
         POP BC
         POP AF
         RET
-evaluacionIntento:
-        PUSH AF
-        PUSH BC
-        PUSH HL
-
-        LD HL, intentos
-        INC HL
-        LD A, H
-        LD DE, claveTemp
-        INC DE
-
-        CP D
-        JR Z , acierto
-
-
-        POP HL
-        POP BC
-        POP AF
-        RET
-acierto:
-        POP HL
-        POP BC
-        POP AF
-        LD L, 5
-        LD C, 5
-        LD A, 5      ; color que pinta el slot
-        CALL pixelyxc   ; pinto el slot
-        RET
- 

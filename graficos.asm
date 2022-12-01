@@ -5,7 +5,7 @@ Borde:
         POP BC
         RET
 
-pixelyxc:   ; funcion que pinta un pixel en la posicion x,y
+pixelyxc:   ; funcion que pinta un pixel en la posicion x,y Autor Daniel Leon
         push AF
         push DE
         push HL
