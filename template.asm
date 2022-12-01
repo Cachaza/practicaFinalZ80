@@ -50,7 +50,7 @@ pintarTablero:
         LD E, filas ; cargo el numero de filas del tablero
 
 
-
+; Nuevo codigo
 
         CALL copiaDatos
 
@@ -123,7 +123,9 @@ saltoInsctrucciones2
         DEC E
         JR NZ, evaluarBlanco2
 
-
+        ld a, D
+        or A
+        jr z, acabamospintar
 pintarBlanco2:        
         LD B, D
         CALL validacionXY
@@ -140,7 +142,7 @@ buclePintarBlanco:
         DJNZ buclePintarBlanco
   
 
-
+acabamospintar:
 
 
 
@@ -166,7 +168,7 @@ slots1: DB slots
 
 
 clave: DB 4,5,3,1
-intentoJugador: DB 4,5,3,2
+intentoJugador: DB 4,1,3,5
 claveTemp: DB 0,0,0,0
 
 contadorAciertos: DB slots
