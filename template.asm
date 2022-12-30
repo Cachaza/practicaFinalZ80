@@ -50,7 +50,7 @@ pintarTablero:
         LD E, filas ; cargo el numero de filas del tablero
 
 
-; Nuevo codigo
+; Evalucion de un intento
 
         CALL copiaDatos
 
@@ -117,9 +117,6 @@ saltoInsctrucciones2
         INC IX
         LD IY, claveTemp
 
-
-        
-      
         DEC E
         JR NZ, evaluarBlanco2
 
