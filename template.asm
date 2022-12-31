@@ -112,7 +112,7 @@ saltoInsctrucciones:
         
         ; ningun acierto
         LD A, D
-        OR A
+        OR A 
         JR Z, evaluarBlanco
 
         ; prepentacion de pintar los rojos
@@ -184,6 +184,9 @@ acabamospintar:
         INC A
         LD (intento), A
 
+
+        CALL copiaDatosIntento
+
         JP antesDeTeclado
 
 
@@ -197,8 +200,8 @@ ganador:
 colorLineas: EQU 1
 negro: EQU 8
 
-slots: EQU 4
-filas: EQU 10
+slots: EQU 3
+filas: EQU 5
 
 ;Variables
 intento: DB 0
@@ -209,10 +212,11 @@ slots1: DB slots
 colorSlot: DB 1
 
 
-clave: DB 4,5,3,1; lo que hay que adivinar
-intentoJugador: DB 4,5,2,6 ; lo que introduce el jugador
+clave: DB 3,2,1; lo que hay que adivinar
+intentoJugador: DB 255,255,255 ; lo que introduce el jugador
+intentoJugadorBase: DB 255,255,255
 
-claveTemp: DB 0,0,0,0
+claveTemp: DB 0,0,0
 
 contadorAciertos: DB slots ; no esta en uso
 
@@ -239,6 +243,21 @@ copiaDatos:
         PUSH HL
         LD HL, clave
         LD DE, claveTemp
+        LD BC, slots
+        LDIR  ;cargamos la clave en claveTemp
+        POP HL
+        POP DE
+        POP BC
+        POP AF
+        RET
+
+copiaDatosIntento:
+        PUSH AF
+        PUSH BC
+        PUSH DE
+        PUSH HL
+        LD HL, intentoJugadorBase
+        LD DE, intentoJugador
         LD BC, slots
         LDIR  ;cargamos la clave en claveTemp
         POP HL
@@ -290,8 +309,23 @@ aceptarColor:
         CP slots - 1 ; como pito antes de nada el slot, si es igual a slots -1 es que es el ultimo
         JR Z, ultimoSlot ; es el ultimo slot
 
+        LD HL, intentoJugador
+buclePosicion:
+        LD A , (HL)
+        CP 255 ; si es que estaba vacio, metemos el color que hay en colorSlot
+        JR Z, meterColor 
+        INC HL
+        JR buclePosicion
+
+meterColor:
         LD A, (colorSlot)
-        LD (intentoJugador + slot), A ; intento de guardar el color en el array de inentoJugador
+        LD (HL), A ; intento de guardar el color en el array de inentoJugador
+
+
+        
+
+
+        ;LD (intentoJugador + slot), A ; intento de guardar el color en el array de inentoJugador
         
 
         LD A, (slot)
@@ -299,8 +333,20 @@ aceptarColor:
         LD (slot), A
         JR finAceptarColor
 ultimoSlot:
+
+        LD HL, intentoJugador
+buclePosicion2:
+        LD A , (HL)
+        CP 255 ; si es que estaba vacio, metemos el color que hay en colorSlot
+        JR Z, meterColor2 
+        INC HL
+        JR buclePosicion2
+
+meterColor2:
         LD A, (colorSlot)
-        LD (intentoJugador + slot), A ; intento de guardar el color en el array de inentoJugador
+        LD (HL), A ; intento de guardar el color en el array de inentoJugador
+
+
         LD A, 0
         LD (slot), A
         LD A, 1
