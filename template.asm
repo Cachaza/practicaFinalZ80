@@ -50,8 +50,46 @@ pintarTablero:
         LD E, filas ; cargo el numero de filas del tablero
 
 
-; Evalucion de un intento
+; Pintar los slots
+        LD HL, $5800
+        LD BC, $FBFE
 
+antesDeTeclado:
+        ;POP AF
+
+        CALL slotyx
+        LD A, (colorSlot)
+        CALL pixelyxc
+
+        ;PUSH AF
+        
+
+waitnokey:
+        LD BC, $FBFE
+        IN A, (C)
+        AND $1F
+        CP $1F
+        JR NZ, waitnokey
+
+
+waitKey:        
+        LD BC, $FBFE
+        IN A, (C)
+        BIT 0, A ; letra Q
+        JP Z, bajarColor
+        BIT 1, A ; letra W
+        JP Z, subirColor
+        BIT 4, A ; letra T
+        JP Z, aceptarColor
+        JR waitKey
+                
+            
+
+
+
+
+; Evalucion de un intento
+evaluacionIntento:
         CALL copiaDatos
 
         ; Preparacion del bucle
@@ -141,7 +179,12 @@ buclePintarBlanco:
 
 acabamospintar:
 
+        ; una vez pintado todo, incrementamos el intento
+        LD A, (intento)
+        INC A
+        LD (intento), A
 
+        JP antesDeTeclado
 
 
 ;-------------------------------------------------------------------------------------------------
@@ -163,12 +206,15 @@ slot: DB 0
 
 slots1: DB slots
 
+colorSlot: DB 1
 
-clave: DB 4,5,3,1
-intentoJugador: DB 4,1,3,5
+
+clave: DB 4,5,3,1; lo que hay que adivinar
+intentoJugador: DB 4,5,2,6 ; lo que introduce el jugador
+
 claveTemp: DB 0,0,0,0
 
-contadorAciertos: DB slots
+contadorAciertos: DB slots ; no esta en uso
 
 
 ; Razon para las formulas: https://stackoverflow.com/questions/27912979/center-rectangle-in-another-rectangle
@@ -200,3 +246,83 @@ copiaDatos:
         POP BC
         POP AF
         RET
+
+bajarColor:
+        PUSH AF
+        LD A, (colorSlot)
+        CP 1 
+        JR Z, vuletaAbajo ; si es 1 que es el min, como estamos intentando bajar el color, volvemos a 8
+
+        DEC A
+        LD (colorSlot), A
+        POP AF
+        JP antesDeTeclado
+
+vuletaAbajo:
+        LD A, 8
+        LD (colorSlot), A
+        POP AF
+        JP antesDeTeclado
+
+subirColor:
+        PUSH AF
+        LD A, (colorSlot)
+        CP 8
+        JR Z, vueltaArriba ; si es 8 que es el max, como estamos intentando subir el color, volvemos a 1
+
+        INC A
+        LD (colorSlot), A
+        POP AF
+        JP antesDeTeclado
+
+vueltaArriba:
+        LD A, 1
+        LD (colorSlot), A
+        POP AF
+        JP antesDeTeclado
+
+aceptarColor:
+        PUSH AF
+        PUSH HL
+        PUSH DE
+
+        LD A, (slot)
+        CP slots - 1 ; como pito antes de nada el slot, si es igual a slots -1 es que es el ultimo
+        JR Z, ultimoSlot ; es el ultimo slot
+
+        LD A, (colorSlot)
+        LD (intentoJugador + slot), A ; intento de guardar el color en el array de inentoJugador
+        
+
+        LD A, (slot)
+        INC A
+        LD (slot), A
+        JR finAceptarColor
+ultimoSlot:
+        LD A, (colorSlot)
+        LD (intentoJugador + slot), A ; intento de guardar el color en el array de inentoJugador
+        LD A, 0
+        LD (slot), A
+        LD A, 1
+        LD (colorSlot), A
+
+        ;si hacemos aqui el incremento de intento, pintaremos la validacion  en la siguiente fila
+        ;LD A, (intento)
+        ;INC A
+        ;LD (intento), A
+
+        PUSH DE
+        POP HL
+        POP AF
+        JP evaluacionIntento
+
+
+        
+
+
+finAceptarColor:
+        PUSH DE
+        POP HL
+        POP AF
+        JP antesDeTeclado
+
