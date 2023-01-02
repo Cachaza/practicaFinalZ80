@@ -127,7 +127,7 @@ buclePintarRojo:
         ; comprobar si ha ganado
         LD A , D
         CP slots
-        JR Z, ganador
+        JP Z, ganador
 
 
 
