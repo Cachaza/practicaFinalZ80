@@ -1,4 +1,7 @@
-        CALL copiaDatos                                                                                                                                                                            
+; Evalucion de un intento
+evaluacionIntento:
+        CALL copiaDatos
+
         ; Preparacion del bucle
         LD D,0
         LD B, slots
@@ -19,7 +22,7 @@ saltoInsctrucciones:
         
         ; ningun acierto
         LD A, D
-        OR A
+        OR A 
         JR Z, evaluarBlanco
 
         ; prepentacion de pintar los rojos
@@ -34,7 +37,7 @@ buclePintarRojo:
         ; comprobar si ha ganado
         LD A , D
         CP slots
-        JR Z, ganador
+        JP Z, ganador
 
 
 
@@ -62,13 +65,12 @@ saltoInsctrucciones2
         INC IX
         LD IY, claveTemp
 
-
-        
-      
         DEC E
         JR NZ, evaluarBlanco2
 
-
+        ld a, D
+        or A
+        jp z, acabamospintar
 pintarBlanco2:        
         LD B, D
         CALL validacionXY
@@ -83,5 +85,4 @@ buclePintarBlanco:
         CALL pixelyxc
         INC C
         DJNZ buclePintarBlanco
-  
-
+        RET

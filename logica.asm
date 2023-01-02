@@ -50,7 +50,7 @@ validacionXY:
         ;CALL pixelyxc   ; pinto el slot
         RET 
 
-copiaDatos:
+copiaDatos: 
         PUSH AF
         PUSH BC
         PUSH DE
@@ -73,7 +73,7 @@ copiaDatosIntento:
         LD HL, intentoJugadorBase
         LD DE, intentoJugador
         LD BC, slots
-        LDIR  ;cargamos la clave en claveTemp
+        LDIR  ;cargamos intentoJugadorBase en intentoJugador
         POP HL
         POP DE
         POP BC

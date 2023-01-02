@@ -1,11 +1,11 @@
 bajarColor:
         PUSH AF
-        LD A, (colorSlot)
+        LD A, (colorSlot)  ; saco el color del slot al registro A
         CP 1 
         JR Z, vuletaAbajo ; si es 1 que es el min, como estamos intentando bajar el color, volvemos a 8
 
-        DEC A
-        LD (colorSlot), A
+        DEC A   ; reduzco el registro A ya que no lo puedo hacer directamente con la variable
+        LD (colorSlot), A ; guardo el nuevo valor en el slot
         POP AF
         JP antesDeTeclado
 
@@ -17,12 +17,12 @@ vuletaAbajo:
 
 subirColor:
         PUSH AF
-        LD A, (colorSlot)
+        LD A, (colorSlot) ; saco el color del slot al registro A
         CP 8
         JR Z, vueltaArriba ; si es 8 que es el max, como estamos intentando subir el color, volvemos a 1
 
-        INC A
-        LD (colorSlot), A
+        INC A ; incremento el registro A ya que no lo puedo hacer directamente con la variable
+        LD (colorSlot), A ; guardo el nuevo valor en el slot
         POP AF
         JP antesDeTeclado
 
