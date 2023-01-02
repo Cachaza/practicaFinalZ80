@@ -45,12 +45,12 @@ pintarConEspacios:       ; pinta una linea cada dos pixeles, es decir para casa 
         RET
 
 
-; pinta el bode de verde 
+; pinta el borde de verde 
 ganador:
         LD a, 4
         out ($FE), A
         jr endofcode
-; pinta el bode de rojo
+; pinta el borde de rojo
 perdedor:
         LD a, 2
         out ($FE), A

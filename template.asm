@@ -141,33 +141,33 @@ evaluarBlanco2:
         CP (IX)
         JR NZ, saltoInsctrucciones2
 
-        INC D
+        INC D ; incrementamos el numero de aciertos
         LD (IY), 254 ; 255 por que es un numero que el usuario no puede introducir
 
 saltoInsctrucciones2
-        INC IY
-        DJNZ evaluarBlanco2
+        INC IY   ; incrementamos el indice de la clave primero para rotar por todos sus valores y compararlos todos con un digito del intento
+        DJNZ evaluarBlanco2 ; mientras no se hayan evaluado todos los digitos del intento, seguimos evaluando
         LD B, slots
-        INC IX
+        INC IX  ; incrementamos el indice del intento una vez lo hemos comparado con todos los digitos de la clave
         LD IY, claveTemp
 
-        DEC E
+        DEC E ; decrementamos el numero de slots a evaluar
         JR NZ, evaluarBlanco2
 
-        ld a, D
-        or A
+        ld a, D  ; cargamos el numero de aciertos en A
+        or A ; si no hay ningun acierto blanco, salimos
         jr z, acabamospintar
 pintarBlanco2:        
-        LD B, D
-        CALL validacionXY
+        LD B, D ; cargamos el numero de aciertos en B que es el registro que usa el bucle para pintar los aciertos
+        CALL validacionXY ; vemos donde tenemos que pintar los blancos
         POP DE
         LD A, C 
-        ADD D 
-        LD C, A
+        ADD D ; teniamos que pintar los blancos despues de los rojos, por lo que tenemos que sumar el numero de rojos a la posicion X de los blancos 
+        LD C, A 
         LD A, 7 ; 
 
 
-buclePintarBlanco:
+buclePintarBlanco: ; pintar los blancos tantas veces como aciertos haya
         CALL pixelyxc
         INC C
         DJNZ buclePintarBlanco
@@ -181,16 +181,16 @@ acabamospintar:
         LD (intento), A
 
 
-        CALL copiaDatosIntento
+        CALL copiaDatosIntento ; reseteamos el intento del jugador con todo a 255 para que no se quede con los valores anteriores
         LD A, (numIntentos)
-        DEC A
+        DEC A ; decrementamos el numero de intentos restantes
         LD (numIntentos), A
         LD A, (numIntentos)
-        OR A
+        OR A ; si no quedan intentos, perdiste
         JR Z, perdedor
 
 
-        JP antesDeTeclado
+        JP antesDeTeclado ; volvemos al principio para que el jugador pueda introducir otro intento
 
 
 ;-------------------------------------------------------------------------------------------------
@@ -215,13 +215,11 @@ colorSlot: DB 1
 
 clave: DB 3,2,1; lo que hay que adivinar
 intentoJugador: DB 255,255,255 ; lo que introduce el jugador
-intentoJugadorBase: DB 255,255,255
+intentoJugadorBase: DB 255,255,255 ; base para resetear el intento del jugador
 
 claveTemp: DB 0,0,0
 
-contadorAciertos: DB slots ; no esta en uso
-
-
+; Coordenadas
 ; Razon para las formulas: https://stackoverflow.com/questions/27912979/center-rectangle-in-another-rectangle
 coordenadaXInicial: EQU ((32- ((slots * 4) - (slots -2)) ) / 2); ; Coordenadas de donde empieza a dibujar, esta es la x
 coordenadaYInicial: EQU ((24- ((filas * 2) + 1) ) / 2) ; Esta la y
