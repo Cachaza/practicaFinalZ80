@@ -186,6 +186,13 @@ acabamospintar:
 
 
         CALL copiaDatosIntento
+        LD A, (numIntentos)
+        DEC A
+        LD (numIntentos), A
+        LD A, (numIntentos)
+        OR A
+        JR Z, perdedor
+
 
         JP antesDeTeclado
 
@@ -194,6 +201,10 @@ acabamospintar:
 endofcode:      jr endofcode    ; Infinite loop
 ganador:
         LD a, 4
+        out ($FE), A
+        jr endofcode
+perdedor:
+        LD a, 2
         out ($FE), A
         jr endofcode
 ; Contantes
@@ -206,6 +217,7 @@ filas: EQU 5
 ;Variables
 intento: DB 0
 slot: DB 0
+numIntentos: DB filas
 
 slots1: DB slots
 
@@ -236,35 +248,6 @@ coordenadaYInicial: EQU ((24- ((filas * 2) + 1) ) / 2) ; Esta la y
 
 
 
-copiaDatos:
-        PUSH AF
-        PUSH BC
-        PUSH DE
-        PUSH HL
-        LD HL, clave
-        LD DE, claveTemp
-        LD BC, slots
-        LDIR  ;cargamos la clave en claveTemp
-        POP HL
-        POP DE
-        POP BC
-        POP AF
-        RET
-
-copiaDatosIntento:
-        PUSH AF
-        PUSH BC
-        PUSH DE
-        PUSH HL
-        LD HL, intentoJugadorBase
-        LD DE, intentoJugador
-        LD BC, slots
-        LDIR  ;cargamos la clave en claveTemp
-        POP HL
-        POP DE
-        POP BC
-        POP AF
-        RET
 
 bajarColor:
         PUSH AF

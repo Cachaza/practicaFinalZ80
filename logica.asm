@@ -49,3 +49,33 @@ validacionXY:
         ;LD A, 2         ; color qeu pintar el slot
         ;CALL pixelyxc   ; pinto el slot
         RET 
+
+copiaDatos:
+        PUSH AF
+        PUSH BC
+        PUSH DE
+        PUSH HL
+        LD HL, clave
+        LD DE, claveTemp
+        LD BC, slots
+        LDIR  ;cargamos la clave en claveTemp
+        POP HL
+        POP DE
+        POP BC
+        POP AF
+        RET
+
+copiaDatosIntento:
+        PUSH AF
+        PUSH BC
+        PUSH DE
+        PUSH HL
+        LD HL, intentoJugadorBase
+        LD DE, intentoJugador
+        LD BC, slots
+        LDIR  ;cargamos la clave en claveTemp
+        POP HL
+        POP DE
+        POP BC
+        POP AF
+        RET
