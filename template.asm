@@ -55,15 +55,11 @@ pintarTablero:
         LD BC, $FBFE
 
 antesDeTeclado:
-        ;POP AF
 
         CALL slotyx
         LD A, (colorSlot)
         CALL pixelyxc
-
-        ;PUSH AF
         
-
 waitnokey:
         LD BC, $FBFE
         IN A, (C)
