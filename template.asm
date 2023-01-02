@@ -199,14 +199,7 @@ acabamospintar:
 
 ;-------------------------------------------------------------------------------------------------
 endofcode:      jr endofcode    ; Infinite loop
-ganador:
-        LD a, 4
-        out ($FE), A
-        jr endofcode
-perdedor:
-        LD a, 2
-        out ($FE), A
-        jr endofcode
+
 ; Contantes
 colorLineas: EQU 1
 negro: EQU 8

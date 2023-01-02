@@ -44,3 +44,14 @@ pintarConEspacios:       ; pinta una linea cada dos pixeles, es decir para casa 
         DJNZ pintarConEspacios
         RET
 
+
+; pinta el bode de verde 
+ganador:
+        LD a, 4
+        out ($FE), A
+        jr endofcode
+; pinta el bode de rojo
+perdedor:
+        LD a, 2
+        out ($FE), A
+        jr endofcode
